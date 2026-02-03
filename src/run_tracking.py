@@ -9,6 +9,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seq_dir", required=True)
     parser.add_argument("--out_dir", default="outputs")
+    parser.add_argument("--model_size", default="n", choices=["n", "s", "m", "l", "x"],
+                        help="YOLO model size: n=nano, s=small, m=medium, l=large, x=xlarge")
     args = parser.parse_args()
 
     img_dir = os.path.join(args.seq_dir, "img1")
@@ -31,9 +33,13 @@ def main():
         print("ERROR: could not read first image:", frames[0])
         return
 
-    model = YOLO("yolov8n.pt")  # ok to keep in project root
+    # Load model with specified size
+    model_name = f"yolov8{args.model_size}.pt"
+    model = YOLO(model_name)
 
     results = model(img, classes=[0], conf=0.3)
+    
+    print(f"Model: {model_name}")
 
     for r in results:
         if r.boxes is None:
@@ -54,13 +60,13 @@ def main():
             )
 
     seq_name = os.path.basename(args.seq_dir.rstrip("\\/"))
-    out_seq_dir = os.path.join(args.out_dir, seq_name)
+    out_seq_dir = os.path.join(args.out_dir, f"{seq_name}_yolov8{args.model_size}")
     os.makedirs(out_seq_dir, exist_ok=True)
 
     out_path = os.path.join(out_seq_dir, "det_example.jpg")
     cv2.imwrite(out_path, img)
 
-    print("Saved detection image to:", out_path)
+    print(f"Saved detection image to: {out_path}")
 
 
 if __name__ == "__main__":
