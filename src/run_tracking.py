@@ -9,7 +9,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seq_dir", required=True)
     parser.add_argument("--out_dir", default="outputs")
-    parser.add_argument("--model_size", default="n", choices=["n", "s", "m", "l", "x"],
+    parser.add_argument("--model_size", default="m", choices=["n", "s", "m", "l", "x"],
                         help="YOLO model size: n=nano, s=small, m=medium, l=large, x=xlarge")
     args = parser.parse_args()
 
